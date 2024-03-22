@@ -21,5 +21,9 @@ First of all, I only gets the columns that help to answer my question from the d
 
 The head of cleaned data shows below: 
 
+| Syntax | Description |
+| ----------- | ----------- |
+| Header | Title |
+| Paragraph | Text |
 |  | position |	champion | result	| firstbloodkill |
 | 0	| top	| Aatrox | 0 | 0.0 |
