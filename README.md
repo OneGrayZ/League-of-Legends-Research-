@@ -56,6 +56,7 @@ Now let start exploring the question, "Which jungle champion gets the first bloo
 
 ### Interesting Aggregates:
 This *groupby()* shows 3 important values. The **'sum'** column describes the counts of getting the first blood and win the game for each champion. The **'count'** column describes the counts of getting the first blood in total for each champion. The **'mean'** column describes the win rate of each champion of getting the first blood and win the game. Now you might find out that the champion with the highest win rate such as 1 has low counts for getting the first blood. In addition, the champion with the lowest win rate such as 0 also has low counts for getting the first blood. 
+
 | Champion        | Sum | Count | Mean      |
 |-----------------|-----|-------|-----------|
 | Amumu           | 0   | 1     | 0.000000  |
@@ -192,4 +193,58 @@ Because the p-value is 1, I fail to reject the null hypothesis that the win rate
 ## Framing a Prediction Problem
 Based on the Hypothesis test, we might conclude that the benefits for jungle taking the first blood kill will not increase the team win rate by a lot. Then it leads to another interesting question. If jungle will not increase the team win rate by taking first blood kill, is there such a position increase the team win rate by taking the first blood? In other words, which position gets the first blood kill, the team is most likely to win the game. 
 
-Therefore, now let's try predict if a team will win or lose a game when different position gets the first blood kill. I will do a multiclass classification since there are 5 different types of position. I will choose predict output of 'result' which indicates the result of the game because most people care about winning while they are playing. I will use accuracy to evaluate my model because the idea of this model is to tell people when a type of position gets the first blood, their team are likely to win or not. If the accuracy is the least thing that I care about, it will be no difference of guessing the result than predicting the result by running the model. I use regession model first. 
+Therefore, now let's try predict if a team will win or lose a game when different position gets the first blood kill. I will do a multiclass classification since there are 5 different types of position. I will choose predict output of **'result'** which indicates the result of the game because most people care about winning while they are playing. I will use accuracy to evaluate my model because the idea of this model is to tell people when a type of position gets the first blood, their team are likely to win or not. If the accuracy is the least thing that I care about, it will be no difference of guessing the result than predicting the result by running the model. I use regession model first. 
+
+## Baseline Model
+My base model has two predictors which are **'position' and 'firstbloodkill'** columns. The 'position' is nominal since there are 5 positions and connot be compared. The 'firstbloodkill' is quantitative which indicates whether this position gets the first blood kill in the game. The output for my model is 'result' which is quantitative indicates the result of the game. 
+
+In the beginning, I get the needed data from dataset, and then use train test split to get my train set and test set with which the test size is **25%**. Because the 'position' is nonminal, I apply the ColumnTransformer to transform 'position' by using OneHotEncoder, and 'firstbloodkill' by using StandardScaler. Next, I just called a LinearRegression and fits the train set into my model. After fitting, I use score method to check the accuracy of my train and test set. This method calculate the value of R^2 of the model. I found out this model is not doing good because the R^2 is **0.0037852165311508257** for trian set, and **0.004114362110160696** for test set which is far from 1 which means the linear does not fit well. 
+
+## Final Model
+In order to improve my model. I start by adding more features. I add **'side' and 'kills'** columns. The 'side' is nominal which indicates the game side of position which is either red or blue. I think this factor will help my model because the game map in League of Legends is not symmetry. The side red starts at top right, but the side blue starts at bottom left. Therefore, there are some place can be reached easily by one side than another which makes the benefit side more likely to get a kill. The 'kills' is quantitative which indicates the the total kills of that position got in the game. I think this factor matters because after a position gets the first blood, it will have more power which makes them most likely to get the kills again. In the game, more kills means more money means more items means more damage means more likely to win. 
+
+Similiar to my base model, I do the same for 'position' and 'firstbloodkill', but I also OneHotEncoder 'side', and also StanardScaler 'kills'. After all ColumnTransforms, I fits a linear reggression into my data, and then check the accuracy. This time, the R^2 is **0.15981344297856914** for the train set, and **0.15531338549828344** for the test set. The accuracy is much better than my base model which increse about **15.5%**. However, in general, the model is still not doing well. 
+
+Therefore, I start using **hyperparameters** to determine if it will improve my model. I create 2 empty list which are going to help me to find the hyperparameter that leads to the best test set performance. I run a for loop which range from 1 to 6 as my polynomial degree. 
+
+After the for loop, I find out that when the degree is **2** the test error is the lowest, so I choose degree of 2 and use it to fit my train set again. This time, I get R^2 of **0.17695699054777625** for the train set, and **0.15531338549828344** for the test set. This model only improve the train set by about 2% and not improve test set at all. 
+
+<iframe
+  src="assets/FM.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The model is still not doing well, so I decide to give **DecisionTreeClassifier** a try. Because DecisionTreeClassifier cannot handle any nominal and ordinal values, I transform my X trian and test by using the ColumnTransformer which I mentioned before. Then, I create a DecisionTreeClassifier, and run a for loop in range 1 to 20 for tree depth to determine which tree depth is best fit. 
+
+After the loop, the value of accuracy stops changing after tree's depth is 14, so I make my DecisionTreeClassifier has the max depth of **14**. This time, the R^2 is **0.6782909389286133** for train set, and **0.6729957805907173** for test set. It is a huge improvment model which increase the accuracy for about **50%**. Although the accuracy still not reach above 80%, I still thing this is a good model since it improved a lot. Finally, I find a model that can be used.
+
+## Fairness Analysis
+
+In League of Legends, if you get the eighth kill and after every kill that you get, the system will display that you are legendary to other players instead of just saying you killed a enemy champion. In order to perform a fairness analysis and this game setting, I make 2 group, the first group is a position gets at least 8 kills in the game, and another group will be the rest. 
+
+C: Our desicion tree classifier (1 if win the game, 0 if lose the game)
+
+A: Whether or not it was legendary (has at least 8 kills) (1 if true, 0 if false).
+
+From the observed stats, the winning rate of a position is legendary is **0.997268**, and the winning rate of a position is not legendary is **0.421270**. Now, let's compute the accuracy of C in each group. If these two numbers are the same, C achieves accuracy parity. However, it has False for **0.660090**, and True for **0.860656**.
+
+Let's run a permutation test to see if the difference in accuracy is significant.
+
+**Null Hypothesis**: The classifier's accuracy is the same for both who is legendary and who is not legendary, and any differences are due to chance.
+
+**Alternative Hypothesis**: The classifier's accuracy is higher for who is not legendary.
+
+Test statistic: Difference in accuracy (True minus False).
+
+Significance level: 0.05
+
+Since the p-value is 0 which is less than my significance level, I reject the null hypothesis.
+
+<iframe
+  src="assets/FA.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
