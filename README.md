@@ -15,11 +15,13 @@ The columns I am interested in to answer, “Which jungle champion gets the firs
 - **champion**: the champion that the player picked 
 - **result**: 0 means defeat, 1 means victory
 - **firstbooldkill**: 0 means not got first blood kill, 1 means got first blood kill
+
 ## Data Cleaning
 First of all, I only gets the columns that help to answer my question from the dataset which are **'position', 'champion', 'result',** and **'firstbloodkill'**. In the position columns, other than the 5 roles of the game which are top, jng, mid, bot, sup, there is another value called **'team'** which I do not want. In addition, because I only care about the position, so I only have **'jng'** in my position column. I also need to filter out the firstbloodkill column because I only care about the win rate when the champion got the first blood kill. I also realize that the 'result' and **'firstbloodkill'** columns should be boolean values instead of integers, so I convert them to the right type. Then I check if there are any missing values now in each columns, and the output shows there is not empty cells in my dataset.
 
 The head of cleaned data shows below: 
-| Syntax | Description |
+
+| Syntax | None |
 | ----------- | ----------- |
-| Header | Title |
+| Header | position |	champion | result	| firstbloodkill |
 | Paragraph | Text |
