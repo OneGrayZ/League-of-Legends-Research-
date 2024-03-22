@@ -39,3 +39,54 @@ First, let's look at all jungle champions' win rate when by drawing graph. This 
   frameborder="0"
 ></iframe>
 
+### Bivariate Analysis:
+Now let start exploring the question, "Which jungle champion gets the first blood kill will increase team's win rate". The first graph shows that the counts of each champion when gets the first blood kill and win the game. In this graph, the champion who gets the most win when has the first blood kill is **Xin Zhao**. The second graph shows that the win rate of each champion when gets the first blood. In this graph, there are some champions have the 100% win rate which means if they get the first blood in the game, they must win the game.
+<iframe
+  src="assets/BA1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+<iframe
+  src="assets/BA2.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+### Interesting Aggregates:
+This *groupby()* shows 3 important values. The sum column describes the counts of getting the first blood and win the game for each champion. The count column describes the counts of getting the first blood in total for each champion. The mean column describes the win rate of each champion of getting the first blood and win the game. Now you might find out that the champion with the highest win rate such as 1 has low counts for getting the first blood. In addition, the champion with the lowest win rate such as 0 also has low counts for getting the first blood. 
+| Champion        | Sum | Count | Mean      |
+|-----------------|-----|-------|-----------|
+| Amumu           | 0   | 1     | 0.000000  |
+| Bel'Veth        | 8   | 12    | 0.666667  |
+| Brand           | 12  | 18    | 0.666667  |
+| Diana           | 0   | 2     | 0.000000  |
+| Fiddlesticks    | 1   | 1     | 1.000000  |
+| Gragas          | 2   | 4     | 0.500000  |
+| Graves          | 7   | 11    | 0.636364  |
+| Ivern           | 4   | 7     | 0.571429  |
+| Jarvan IV       | 9   | 16    | 0.562500  |
+| Jax             | 10  | 18    | 0.555556  |
+| Kayn            | 1   | 1     | 1.000000  |
+| Kindred         | 6   | 9     | 0.666667  |
+| Lee Sin         | 52  | 72    | 0.722222  |
+| Lillia          | 3   | 4     | 0.750000  |
+| Maokai          | 27  | 36    | 0.750000  |
+| Nidalee         | 1   | 3     | 0.333333  |
+| Nocturne        | 27  | 43    | 0.627907  |
+| Nunu & Willump  | 1   | 1     | 1.000000  |
+| Poppy           | 20  | 33    | 0.606061  |
+| Rell            | 19  | 34    | 0.558824  |
+| Rengar          | 2   | 2     | 1.000000  |
+| Sejuani         | 21  | 40    | 0.525000  |
+| Taliyah         | 3   | 7     | 0.428571  |
+| Trundle         | 5   | 10    | 0.500000  |
+| Vi              | 45  | 80    | 0.562500  |
+| Viego           | 28  | 55    | 0.509091  |
+| Volibear        | 3   | 7     | 0.428571  |
+| Wukong          | 7   | 12    | 0.583333  |
+| Xin Zhao        | 56  | 100   | 0.560000  |
+| Zac             | 1   | 1     | 1.000000  |
+
+## Assessment of Missingness
