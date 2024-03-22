@@ -30,6 +30,8 @@ The head of cleaned data shows below:
 | jng      | Lee Sin   | True   | True           |
 
 ## EDA
+### Univariate Analysis:
+First, let's look at all jungle champions' win rate when by drawing graph. This pie graph shows that the win rate of all jungle champions when they get the firstblood. Based on this graph, when a jungle champion gets the first blood kill, the team will have almost **60%** to win.
 
 
 
